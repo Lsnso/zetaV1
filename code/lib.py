@@ -153,7 +153,7 @@ class Game():
     def update_result(self):
         #dealer has blackjack, either draw player blackjack or player loses
         if self.dealer.value == 21 and len(self.dealer.cards) == 2:
-            if self.player.value == 21 and len(self.player.value) == 2:
+            if self.player.value == 21 and len(self.player.cards) == 2:
                 self.result = 0
             else:
                 self.result = -1
