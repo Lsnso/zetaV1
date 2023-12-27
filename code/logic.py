@@ -8,9 +8,7 @@ def logic(pv, dv, count, decision):
     while game.on:
         game.do_player()
     game.do_dealer()
-    game.update_result()
-
-    result = game.result
+    result = game.update_result()
 
     if split: 
         player2, dealer2, deck2 = Hand(), Hand(), Deck()
@@ -19,8 +17,6 @@ def logic(pv, dv, count, decision):
         while game2.on:
             game2.do_player()
         game2.do_dealer()
-        game2.update_result()
-
-        result += game2.result
+        result += game2.update_result()
 
     return result

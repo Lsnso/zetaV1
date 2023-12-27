@@ -172,6 +172,7 @@ class Game():
         #player = value
         elif self.player.value == self.dealer.value:
             self.result = 0
+        return self.result
 
     def read_decision(self):
         #opens deck count table file and returns a decision
