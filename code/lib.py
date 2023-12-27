@@ -175,7 +175,6 @@ class Game():
 
     def read_decision(self):
         #opens deck count table file and returns a decision
-        print(self.player.cards)
         with open(f"./tables/{self.deck.count}.csv", "r") as f:
             table = list(csv.reader(f))
 
