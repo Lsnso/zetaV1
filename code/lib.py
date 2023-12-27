@@ -55,6 +55,7 @@ class Deck():
 class Hand():
     def __init__(self):
         self.cards = []
+        self.soft = False
 
     def add_card(self, card):
         #add card to hand
@@ -72,8 +73,10 @@ class Hand():
                 self.value += 10
             elif card == "A" and self.value < 11:
                 self.value += 11
+                self.soft = True
             elif card == "A" and self.value >= 11:
                 self.value += 1
+                self.soft = False
 
 class Game():
     def __init__(self, player_info, dealer_info, deck_info, decision):
@@ -81,16 +84,16 @@ class Game():
         combinations = {
             #combinations are merely a visual add on while debugging. these must not have impact in the result
             #pair combinations
-            "AA" : [["A", "A"]],
-            "22" : [["2", "2"]],
-            "33" : [["3", "3"]],
-            "44" : [["4", "4"]],
-            "55" : [["5", "5"]],
-            "66" : [["6", "6"]],
-            "77" : [["7", "7"]],
-            "88" : [["8", "8"]],
-            "99" : [["9", "9"]],
-            "TT" : [["T", "T"], ["Q", "Q"], ["J", "J"], ["K", "K"]],
+            "AA" : [["A"]],
+            "22" : [["2"]],
+            "33" : [["3"]],
+            "44" : [["4"]],
+            "55" : [["5"]],
+            "66" : [["6"]],
+            "77" : [["7"]],
+            "88" : [["8"]],
+            "99" : [["9"]],
+            "TT" : [["T"], ["Q"], ["J"], ["K"]],
 
             #soft combinations
             "A2" : [["A", "2"], ["2", "A"]],
@@ -103,6 +106,7 @@ class Game():
             "A9" : [["A", "9"], ["9", "A"]],
             
             #hard combinations
+            "4"  : [["2", "2"]],
             "5"  : [["3", "2"]],
             "6"  : [["4", "2"]],
             "7"  : [["5", "2"], ["4", "3"]],
@@ -171,13 +175,24 @@ class Game():
 
     def read_decision(self):
         #opens deck count table file and returns a decision
+        print(self.player.cards)
         with open(f"./tables/{self.deck.count}.csv", "r") as f:
             table = list(csv.reader(f))
 
         table_j = table[0].index(self.dealer.cards[0])
-        for line in table:
-            if line[0] == str(self.player.value):
-                table_i = table.index(line)
+        #search for hard hands
+        if self.player.soft == False:
+            for line in table:
+                if line[0] == str(self.player.value):
+                    table_i = table.index(line)
+        #search for soft hands
+        elif self.player.soft == True:
+            soft_string = f"A{self.player.value - 11}"
+            if f"A{self.player.value - 11}" == "A1":
+                soft_string = "AA"
+            for line in table:
+                if line[0] == soft_string:
+                    table_i = table.index(line)
         self.decision = table[table_i][table_j]
 
     def do_player(self):
@@ -190,6 +205,7 @@ class Game():
             self.double()
         else:
             print("Missing decision")
+            self.on = False
 
     def hit(self):
         #draws card, checks if player busted, else fetch another decision
